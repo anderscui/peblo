@@ -1,0 +1,11 @@
+[project]
+name = "peblo"
+version = "0.0.1"
+description = "Peblo is a tiny local-first AI toolbox — a growing collection of small, everyday utilities."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

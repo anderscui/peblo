@@ -1,10 +1,14 @@
 [project]
 name = "peblo"
 version = "0.0.1"
-description = "Peblo is a tiny local-first AI toolbox — a growing collection of small, everyday utilities."
+description = "Peblo is a growing collection of small, everyday intelligent tools."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
+dependencies = [
+    "requests>=2.32.5",
+    "typer>=0.20.0",
+]
 
 [build-system]
 requires = ["setuptools>=61"]

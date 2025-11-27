@@ -10,7 +10,7 @@ class ProviderRegistry:
         cls._providers[name] = provider_cls
 
     @classmethod
-    def get(cls, name: str, **kwargs):
+    def get(cls, name: str='ollama', **kwargs):
         if name not in cls._providers:
             raise ValueError(f"Unknown provider: {name}")
         return cls._providers[name](**kwargs)

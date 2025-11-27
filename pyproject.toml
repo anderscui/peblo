@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
+    "langdetect>=1.0.9",
     "requests>=2.32.5",
     "typer>=0.20.0",
 ]

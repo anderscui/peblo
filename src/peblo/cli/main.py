@@ -8,6 +8,9 @@ from peblo.providers import ProviderRegistry
 from peblo.tools.summarize import summarize
 from peblo.tools.translate import translate_text
 from peblo.tools.ocr import ocr_by_llm
+from peblo.tools.image import describe_image
+from peblo.tools.quote import quote_check
+from peblo.tools.peek import peek
 
 
 DEFAULT_VL_MODEL = 'ollama:qwen3-vl:8b-instruct'
@@ -88,14 +91,125 @@ def ocr(
     typer.echo(result['text'])
 
 
-@app.command(name='desc_img')
-def describe_image(file: str):
-    typer.echo('describe an image file')
+@app.command(name='caption')
+def caption(
+    image: str = typer.Argument(..., help="Image file (png, jpg/jpeg, webp, etc.)"),
+    model: str=typer.Option(DEFAULT_VL_MODEL, '--model', '-m', help='provider:model, e.g. ollama:qwen3-vl:8b-instruct')):
+    """
+    Generate a short natural-language caption for an image.
+    """
+
+    p = Path(image)
+    if not p.exists():
+        raise typer.BadParameter(f'Invalid image file: {image}')
+    provider_name, model_name = parse_model(model)
+    provider = load_provider(provider_name, model=model_name)
+    result = describe_image(provider, image)
+    typer.echo(result['caption'])
 
 
-@app.command(name='wit')
-def what_is_this(text: str):
-    typer.echo('what is this?')
+@app.command()
+def quote(
+        mode: str = typer.Argument(..., help='verify or search'),
+        text: str = typer.Argument(..., help='Quote text or meaning'),
+        author: str = typer.Option(None, '--author', '-a', help='Author name'),
+        model: str = typer.Option(
+            DEFAULT_VL_MODEL, '--model', '-m',
+            help='provider:model, e.g. ollama:qwen3-vl:8b-instruct'
+        )
+    ):
+    """
+    verify: verify whether a quote is actually said by a given author
+    search: search a quote by the given meaning (optional author)
+    """
+
+    model = model.lower().strip()
+    if mode not in ('verify', 'search'):
+        raise typer.BadParameter('mode must be either `verify` or `search`')
+
+    if mode == 'verify' and not author:
+        raise typer.BadParameter('verify mode requires --author')
+
+    if mode == 'search' and author:
+        author = author.strip()
+
+    # text = read_text(text)
+    provider_name, model_name = parse_model(model)
+    provider = load_provider(provider_name, model=model_name)
+
+    result = quote_check(provider, mode, text, author)
+    if mode == "verify":
+        if result["result"] == "true":
+            typer.echo("✓ Verified as authentic")
+            typer.echo(f'“{result["quote"]}”')
+            typer.echo(f'— {result["author"]}, {result["source"]}')
+        elif result["result"] == "false":
+            typer.echo("✗ This quote is NOT from the given author.")
+            if result["author"]:
+                typer.echo(f'Real author: {result["author"]}')
+            if result["source"]:
+                typer.echo(f'Source: {result["source"]}')
+        else:
+            typer.echo("？Unable to verify the authenticity of this quote.")
+
+    else:  # search
+        if result["result"] == "found":
+            typer.echo(f'“{result["quote"]}”')
+            typer.echo(f'— {result["author"]}, {result["source"]}')
+        else:
+            typer.echo("No highly reliable matching quote found.")
+
+
+@app.command(name='peek')
+def peek_anything(
+    target: str = typer.Argument(..., help="Text content or file path"),
+    model: str = typer.Option(
+        DEFAULT_VL_MODEL, "--model", "-m",
+        help="provider:model, e.g. ollama:qwen3-vl:8b-instruct"
+    ),
+):
+    """
+    Inspect a piece of text or a text file and give a high-level analysis.
+
+    By default:
+      - If target is an existing file, it is treated as a file.
+      - Otherwise, it is treated as plain text.
+
+    You may override this behavior using --text or --file.
+    """
+
+    model = model.lower().strip()
+    provider_name, model_name = parse_model(model)
+    provider = load_provider(provider_name, model=model_name)
+
+    try:
+        result = peek(
+            provider,
+            target,
+        )
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(str(e))
+        raise typer.Exit(1)
+
+    input_meta = result["input"]
+    analysis = result["analysis"]
+
+    typer.echo(f"[input type] {input_meta['type']}")
+    typer.echo(f"[origin] {input_meta['origin']}")
+    typer.echo("")
+
+    typer.echo(f"[category] {analysis['category']}")
+    typer.echo("")
+    typer.echo("[summary]")
+    typer.echo(analysis["summary"] or "(empty)")
+    typer.echo("")
+
+    typer.echo("[notes]")
+    if analysis["notes"]:
+        for i, note in enumerate(analysis["notes"], 1):
+            typer.echo(f"  {i}. {note}")
+    else:
+        typer.echo("  (none)")
 
 
 @app.callback(invoke_without_command=True)
@@ -118,4 +232,15 @@ def main(
 
 
 if __name__ == "__main__":
+    # python main.py
+    # python main.py --help
+    # python main.py --version
+    # python main.py summary < story.txt
+    # python main.py translate -t ja -m ollama:qwen3:4b-instruct 'hello, world'
+    # python main.py ocr image.png
+    # python main.py quote verify --author 鲁迅 "其实地上本没有路，走的人多了，也便成了路"
+    # python main.py quote search "世上本没有路；走的人多了，也就慢慢有了路"
+    # python main.py peek main.py
+    # python main.py peek all-models.json
+    # python main.py peek "世上本没有路；走的人多了，也就慢慢有了路"
     app()

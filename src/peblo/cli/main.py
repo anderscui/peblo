@@ -16,6 +16,7 @@ from peblo.tools.quote import quote_check
 from peblo.tools.peek import peek
 
 from peblo.cli.loggings import setup_logging
+from peblo.utils.io.pdfs import pdf_to_text, get_pdf_meta
 
 logger = logging.getLogger(__name__)
 
@@ -282,6 +283,37 @@ def qa_anything(
         typer.echo("(none)")
 
 
+@app.command(name="pdftext")
+def pdftext_cmd(
+    target: str = typer.Argument(..., help='PDF file path'),
+    json_output: bool = typer.Option(False, '--json', help='Output JSON')
+):
+    result = pdf_to_text(target)
+    if json_output:
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        typer.echo(f'[origin] {result['origin']}')
+        typer.echo(f'[pages] {result['page_count']}')
+        if result['truncated']:
+            logger.warning('[WARNING] text truncated')
+            typer.echo('[WARNING] text truncated')
+        typer.echo('[text]')
+        typer.echo(result['text'][:1000] + ('...' if result['truncated'] else ''))
+
+
+@app.command(name='docmeta')
+def docmeta_cmd(
+    target: str = typer.Argument(..., help='PDF file path'),
+    json_output: bool = typer.Option(False, '--json', help='Output JSON')
+):
+    result = get_pdf_meta(target)
+    if json_output:
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        for k, v in result.items():
+            typer.echo(f'{k}: {v}')
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
@@ -328,4 +360,6 @@ if __name__ == "__main__":
     # python main.py qa --json 'List the functions defined in this file.' main.py
     # python main.py qa --json 'How to fix this error?' 'ERROR: FileNotFoundError: config.yaml not found'
     # python main.py --debug --log-file run.log qa 'How to fix this error?' 'ERROR: FileNotFoundError: config.yaml not found'
+    # python main.py --debug pdftext 'Qwen3-VL Technical Report (2025.11).pdf'
+    # python main.py --debug docmeta 'Qwen3-VL Technical Report (2025.11).pdf'
     app()

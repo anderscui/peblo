@@ -1,11 +1,13 @@
 # coding=utf-8
 import json
+import logging
 
 import requests
 
 from peblo.providers import BaseLlmProvider
 from peblo.providers.registry import ProviderRegistry
 
+logger = logging.getLogger(__name__)
 ProviderRegistry.register("ollama", lambda **kwargs: OllamaProvider(**kwargs))
 
 
@@ -13,7 +15,7 @@ class OllamaProvider(BaseLlmProvider):
     def __init__(self, model="qwen3:4b-instruct", host="http://localhost:11434"):
         self.model = model
         self.host = host.rstrip("/")
-        print(f'model {self.model} initialized')
+        logger.debug(f'model {self.model} initialized')
 
     @property
     def capabilities(self):

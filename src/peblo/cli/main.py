@@ -1,16 +1,23 @@
 # coding=utf-8
+import json
+import logging
 import sys
 from pathlib import Path
 
 import typer
 
 from peblo.providers import ProviderRegistry
+from peblo.tools.qa import qa
 from peblo.tools.summarize import summarize
 from peblo.tools.translate import translate_text
 from peblo.tools.ocr import ocr_by_llm
 from peblo.tools.image import describe_image
 from peblo.tools.quote import quote_check
 from peblo.tools.peek import peek
+
+from peblo.cli.loggings import setup_logging
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_VL_MODEL = 'ollama:qwen3-vl:8b-instruct'
@@ -174,8 +181,6 @@ def peek_anything(
     By default:
       - If target is an existing file, it is treated as a file.
       - Otherwise, it is treated as plain text.
-
-    You may override this behavior using --text or --file.
     """
 
     model = model.lower().strip()
@@ -212,6 +217,71 @@ def peek_anything(
         typer.echo("  (none)")
 
 
+@app.command(name="qa")
+def qa_anything(
+    question: str = typer.Argument(..., help="Question to ask"),
+    target: str | None = typer.Argument(
+        None, help="Text content or file path (optional)"
+    ),
+    model: str = typer.Option(
+        DEFAULT_VL_MODEL, "--model", "-m",
+        help="provider:model, e.g. ollama:qwen3-vl:8b-instruct"
+    ),
+    json_output: bool = typer.Option(
+        False, "--json",
+        help="Output raw JSON result"
+    ),
+):
+    """
+    Ask a question against a piece of text or a text file.
+
+    By default:
+      - If target is an existing file, it is treated as a file.
+      - Otherwise, it is treated as plain text.
+    """
+
+    model = model.lower().strip()
+    provider_name, model_name = parse_model(model)
+    provider = load_provider(provider_name, model=model_name)
+    logger.info(f'use provider: {provider}')
+
+    try:
+        result = qa(
+            provider=provider,
+            question=question,
+            target=target,
+        )
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(str(e))
+        raise typer.Exit(1)
+
+    # -------- JSON 原样输出（给脚本 / 管道用）--------
+    if json_output:
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    # -------- 人类可读输出 --------
+    answer = result.get("answer", "UNKNOWN")
+    source = result.get("source_snippet", "")
+    origin = result.get("origin", "unknown")
+    truncated = result.get("truncated", False)
+
+    typer.echo(f"[origin] {origin}")
+    if truncated:
+        typer.echo("[warning] input text was truncated")
+    typer.echo("")
+
+    typer.echo("[answer]")
+    typer.echo(answer or "UNKNOWN")
+    typer.echo("")
+
+    typer.echo("[source]")
+    if source:
+        typer.echo(source)
+    else:
+        typer.echo("(none)")
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
@@ -220,7 +290,15 @@ def main(
         '--version',
         '-v',
         help='Show version and exit.',
-        is_eager=True)
+        is_eager=True),
+    debug: bool = typer.Option(
+        False, '--debug',
+        help='Enable debug logging'
+    ),
+    log_file: str | None = typer.Option(
+        None, '--log-file',
+        help='Write logs to file'
+    )
 ):
     if version:
         typer.echo("peblo 0.0.1")
@@ -229,6 +307,9 @@ def main(
     if ctx.invoked_subcommand is None:
         typer.echo(ctx.get_help())
         raise typer.Exit()
+
+    setup_logging(debug=debug, log_file=log_file)
+    logger.debug("Logging initialized (debug=%s, log_file=%s)", debug, log_file)
 
 
 if __name__ == "__main__":
@@ -243,4 +324,8 @@ if __name__ == "__main__":
     # python main.py peek main.py
     # python main.py peek all-models.json
     # python main.py peek "世上本没有路；走的人多了，也就慢慢有了路"
+    # python main.py qa --json "世上本没有路；走的人多了，也就慢慢有了路，这是谁说的？"
+    # python main.py qa --json 'List the functions defined in this file.' main.py
+    # python main.py qa --json 'How to fix this error?' 'ERROR: FileNotFoundError: config.yaml not found'
+    # python main.py --debug --log-file run.log qa 'How to fix this error?' 'ERROR: FileNotFoundError: config.yaml not found'
     app()

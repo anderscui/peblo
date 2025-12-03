@@ -3,6 +3,10 @@ import math
 from abc import ABC, abstractmethod
 from typing import Any
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class BaseProvider(ABC):
     """Top-level abstract provider."""
@@ -14,6 +18,9 @@ class BaseProvider(ABC):
 
 class BaseLlmProvider(BaseProvider):
     """Abstract base provider for all LLM backends."""
+
+    def __init__(self, name: str):
+        self.name = name
 
     @abstractmethod
     def chat(self, messages: list[dict[str, str]], stream: bool = False) -> Any:

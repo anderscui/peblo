@@ -13,9 +13,11 @@ ProviderRegistry.register("ollama", lambda **kwargs: OllamaProvider(**kwargs))
 
 class OllamaProvider(BaseLlmProvider):
     def __init__(self, model="qwen3:4b-instruct", host="http://localhost:11434"):
+        super().__init__('ollama')
+
         self.model = model
         self.host = host.rstrip("/")
-        logger.debug(f'model {self.model} initialized')
+        logger.debug(f'{self.name} model {self.model} initialized')
 
     @property
     def capabilities(self):

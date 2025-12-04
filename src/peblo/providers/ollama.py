@@ -6,6 +6,7 @@ import requests
 
 from peblo.providers import BaseLlmProvider
 from peblo.providers.registry import ProviderRegistry
+from peblo.schemas.models import ModelInfo
 
 logger = logging.getLogger(__name__)
 ProviderRegistry.register("ollama", lambda **kwargs: OllamaProvider(**kwargs))
@@ -54,11 +55,57 @@ class OllamaProvider(BaseLlmProvider):
         resp = self._request("api/embeddings", payload)
         return resp.json().get("embedding", [])
 
+    def list_models(self) -> list[ModelInfo]:
+        def _check_capabilities(name: str):
+            name = name.lower()
+            embedding_keywords = ['embed', 'nomic-embed', 'all-minilm', 'bge', 'e5']
+            if any(kw in name for kw in embedding_keywords):
+                return ['embedding']
+
+            vision_keywords = ['vision', '-vl', 'llava', 'ocr']
+            if any(kw in name for kw in vision_keywords):
+                return ['vision', 'chat']
+
+            return ['chat']
+
+        try:
+            resp = requests.get(f'{self.host}/api/tags')
+            resp.raise_for_status()
+            data = resp.json()
+
+            models = []
+            for model in data['models']:
+                caps = _check_capabilities(model['name'])
+                if 'vision' in caps:
+                    modality = ['text', 'image']
+                else:
+                    modality = ['text']
+                models.append(ModelInfo(
+                    id=f'ollama/{model["name"]}',
+                    name=model['name'],
+                    description=None,
+                    modified_at=model['modified_at'],
+                    family=model.get('details', {}).get('family'),
+                    parameter_size=model.get('details', {}).get('parameter_size'),
+                    context_length=None,
+                    modality=modality,
+                    tokenizer=None,
+                    disk_size=model['size'],
+                    pricing=None,
+                    providers=['ollama'],
+                    capabilities=caps
+                ))
+
+            return models
+        except Exception as e:
+            logger.error(f'{self.name} list models failed: {e}')
+            return []
+
 
 if __name__ == '__main__':
     llm = OllamaProvider()
-    resp = llm.chat(messages=[{'role': 'user', 'content': 'hello，世界。'}], stream=False)
-    print(resp)
+    # resp = llm.chat(messages=[{'role': 'user', 'content': 'hello，世界。'}], stream=False)
+    # print(resp)
 
     # print(llm.generate('1+1=?'))
 
@@ -67,3 +114,7 @@ if __name__ == '__main__':
 
     # import time
     # time.sleep(10)
+
+    for m in llm.list_models():
+        print(m)
+        print()

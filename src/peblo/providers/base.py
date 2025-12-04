@@ -5,6 +5,8 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+from peblo.schemas.models import ModelInfo
+
 load_dotenv()
 
 
@@ -52,3 +54,7 @@ class BaseLlmProvider(BaseProvider):
 
         length = len(text.encode("utf-8"))
         return math.ceil(length / bytes_per_token)
+
+    def list_models(self) -> list[ModelInfo]:
+        """List available models."""
+        return []

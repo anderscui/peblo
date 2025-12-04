@@ -10,6 +10,18 @@ class PricingInfo(BaseModel):
     output: Optional[float] = None
     currency: str = 'USD'
 
+    @staticmethod
+    def norm_price_per_token(price_per_token: str | None):
+        def to_float(val: str, unit='1M') -> float:
+            try:
+                return float(val) * (1_000_000 if unit == '1M' else 1000)
+            except Exception:
+                return 0.0
+
+        if price_per_token is None:
+            price_per_token = '0'
+        return to_float(price_per_token)
+
 
 class ModelInfo(BaseModel):
     """
@@ -26,7 +38,9 @@ class ModelInfo(BaseModel):
 
     parameter_size: Optional[str] = None  # '8B', '30B', etc.
     context_length: Optional[int] = None
-    modality: list[Literal['text', 'image', 'audio', 'video']] = Field(default_factory=lambda: ['text'])
+    modality: Optional[str] = None
+    input_modality: list[Literal['text', 'image', 'audio', 'video', 'file']] = Field(default_factory=lambda: ['text'])
+    output_modality: list[Literal['text', 'image', 'audio', 'video', 'file']] = Field(default_factory=lambda: ['text'])
     tokenizer: Optional[str] = None
     disk_size: Optional[int] = None  # for local models only
 
@@ -41,6 +55,7 @@ class ModelInfo(BaseModel):
         'reasoning',
         'tool'
     ]] = Field(default_factory=lambda: ['chat'])
+    supported_parameters: list[str] = Field(default_factory=lambda: [])
 
 
 if __name__ == '__main__':

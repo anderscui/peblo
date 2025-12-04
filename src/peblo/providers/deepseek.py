@@ -6,6 +6,7 @@ import os
 
 from peblo.providers import BaseLlmProvider
 from peblo.providers.registry import ProviderRegistry
+from peblo.schemas.models import ModelInfo
 
 logger = logging.getLogger(__name__)
 ProviderRegistry.register("deepseek", lambda **kwargs: DeepSeekProvider(**kwargs))
@@ -109,20 +110,90 @@ class DeepSeekProvider(BaseLlmProvider):
     def embed(self, text: str):
         raise NotImplementedError('Embedding not implemented for DeepSeek')
 
+    def list_models(self) -> list[ModelInfo]:
+        def _parse_caps(model_id: str):
+            caps = set()
+            mid = model_id.lower()
+
+            # reasoning
+            if any(kw in mid for kw in ['reason', 'r1', 'think']):
+                caps.add('reasoning')
+
+            # embedding
+            if any(kw in mid for kw in ['embed']):
+                caps.add('embedding')
+
+            # ---- chat fallback ----
+            if not caps:
+                caps.add('chat')
+
+            return sorted(caps)
+
+        try:
+            headers = {
+                'Authorization': f'Bearer {self.api_key}',
+                'Accept': 'application/json'
+            }
+            resp = requests.get(
+                f'{self.base_url}/models',
+                headers=headers,
+                timeout=30
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+            models = []
+            for model in data.get('data', []):
+                model_id = model['id']
+
+                caps = _parse_caps(model_id)
+
+                models.append(ModelInfo(
+                    id=f'{self.name}:{model_id}',
+                    name=model_id,
+                    description=None,
+                    modified_at=None,
+
+                    family='deepseek',
+
+                    parameter_size=None,
+                    context_length=None,
+                    modality='text->text',
+                    input_modality=['text'],
+                    output_modality=['text'],
+                    tokenizer=None,
+                    disk_size=None,
+
+                    pricing=None,
+
+                    providers=[self.name],
+                    capabilities=caps,
+                    supported_parameters=[]
+                ))
+
+            return models
+
+        except Exception as e:
+            logger.error(f'{self.name} list models failed: {e}')
+            return []
+
 
 if __name__ == '__main__':
     llm = DeepSeekProvider()
-    # not stream
-    resp = llm.chat(messages=[
-        {'role': 'system', 'content': 'You are a helpful assistant'},
-        {'role': 'user', 'content': 'Hello，世界。'}
-    ], stream=False)
-    print(resp)
-
-    # stream
-    resp_stream = llm.chat(messages=[
-        {'role': 'system', 'content': 'You are a helpful assistant'},
-        {'role': 'user', 'content': 'Hello，世界。'}
-    ], stream=True)
-    for chunk in resp_stream:
-        print(chunk, end='')
+    # # not stream
+    # resp = llm.chat(messages=[
+    #     {'role': 'system', 'content': 'You are a helpful assistant'},
+    #     {'role': 'user', 'content': 'Hello，世界。'}
+    # ], stream=False)
+    # print(resp)
+    #
+    # # stream
+    # resp_stream = llm.chat(messages=[
+    #     {'role': 'system', 'content': 'You are a helpful assistant'},
+    #     {'role': 'user', 'content': 'Hello，世界。'}
+    # ], stream=True)
+    # for chunk in resp_stream:
+    #     print(chunk, end='')
+    for m in llm.list_models():
+        print(m)
+        print()

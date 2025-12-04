@@ -64,7 +64,7 @@ class OllamaProvider(BaseLlmProvider):
 
             vision_keywords = ['vision', '-vl', 'llava', 'ocr']
             if any(kw in name for kw in vision_keywords):
-                return ['vision', 'chat']
+                return ['chat', 'vision']
 
             return ['chat']
 
@@ -80,20 +80,25 @@ class OllamaProvider(BaseLlmProvider):
                     modality = ['text', 'image']
                 else:
                     modality = ['text']
+
                 models.append(ModelInfo(
-                    id=f'ollama/{model["name"]}',
+                    id=f'{self.name}:{model["name"]}',
                     name=model['name'],
                     description=None,
                     modified_at=model['modified_at'],
                     family=model.get('details', {}).get('family'),
+
                     parameter_size=model.get('details', {}).get('parameter_size'),
                     context_length=None,
-                    modality=modality,
+                    modality='+'.join(modality),
+
                     tokenizer=None,
                     disk_size=model['size'],
+
                     pricing=None,
-                    providers=['ollama'],
-                    capabilities=caps
+                    providers=[self.name],
+                    capabilities=caps,
+                    supported_parameters=[]
                 ))
 
             return models

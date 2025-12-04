@@ -4,3 +4,6 @@ from .registry import ProviderRegistry
 from .ollama import OllamaProvider
 from .openrouter import OpenRouterProvider
 from .deepseek import DeepSeekProvider
+from .qwen import QwenProvider
+
+KNOWN_PROVIDERS = ['ollama', 'openrouter', 'deepseek', 'qwen']

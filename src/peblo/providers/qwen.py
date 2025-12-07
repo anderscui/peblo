@@ -259,6 +259,6 @@ if __name__ == '__main__':
     for chunk in resp:
         print(chunk, end='')
 
-    for m in llm.list_models()[:1000]:
+    for m in llm.list_models():
         print(m)
         print()

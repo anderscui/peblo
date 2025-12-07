@@ -25,16 +25,16 @@ class BaseLlmProvider(BaseProvider):
         self.name = name
 
     @abstractmethod
-    def chat(self, messages: list[dict[str, str]], stream: bool = False) -> Any:
+    def chat(self, messages: list[dict[str, str]], stream: bool = False, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
     async def achat(self, messages: list[dict[str, str]], stream: bool = False) -> Any:
         raise NotImplementedError
 
-    def generate(self, text: str) -> str:
+    def generate(self, text: str, **kwargs) -> str:
         messages = [{"role": "user", "content": text}]
-        return self.chat(messages, stream=False)
+        return self.chat(messages, stream=False, **kwargs)
 
     @abstractmethod
     def embed(self, text: str) -> list[float]:

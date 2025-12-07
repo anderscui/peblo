@@ -234,6 +234,7 @@ class OpenRouterModels:
 
     # qwen
     qwen3_max = 'qwen/qwen3-max'  # 1.2-6
+    qwen3_plus = 'qwen/qwen-plus'  # 0.4-1.2
     qwen3_vl_235b_thinking = 'qwen/qwen3-vl-235b-a22b-thinking'  # 0.3-1.2
     qwen3_vl_235b_instruct = 'qwen/qwen3-vl-235b-a22b-instruct'  # coding, 0.22-0.88
     qwen3_vl_32b_instruct = 'qwen/qwen3-vl-32b-instruct'
@@ -246,7 +247,8 @@ class OpenRouterModels:
     qwen3_emb_4b = 'qwen/qwen3-embedding-4b'  # $0.02
     qwen3_emb_06b = 'qwen/qwen3-embedding-0.6b'  # $0.01
 
-    deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model
+    deepseek_v3_2 = 'deepseek/deepseek-v3.2'  # $0.27-0.4
+    deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model, $0.2-0.8
     deepseek_v3_0324 = 'deepseek/deepseek-chat-v3-0324'  # 685B, MoE model
     kimi_k2 = 'moonshotai/kimi-k2'  # coding
     glm_4_6 = 'z-ai/glm-4.6'  # coding, $0.4-1.75
@@ -263,7 +265,7 @@ class OpenRouterModels:
 
 
 if __name__ == '__main__':
-    llm = OpenRouterProvider()
+    llm = OpenRouterProvider(OpenRouterModels.gemini_flash_lite_2_5)
     # resp = llm.chat(messages=[{'role': 'user', 'content': 'hello，世界。'}], stream=False)
     # print(resp)
     #
@@ -271,6 +273,6 @@ if __name__ == '__main__':
     # for chunk in resp:
     #     print(chunk, end='')
 
-    for m in llm.list_models()[:1000]:
-        print(m)
-        print()
+    # for m in llm.list_models()[:1000]:
+    #     print(m)
+    #     print()

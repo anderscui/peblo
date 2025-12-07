@@ -1,5 +1,7 @@
 # coding=utf-8
+import json
 import mimetypes
+from pathlib import Path
 
 
 def is_safe_text_file(file_path: str, sample_size: int = 1024) -> bool:
@@ -44,6 +46,17 @@ def is_safe_text_file(file_path: str, sample_size: int = 1024) -> bool:
         return (printable_count / len(sample)) > 0.8
     except (OSError, IOError):
         return False
+
+
+def json_load(file):
+    file = Path(file)
+    with file.open('r', encoding='utf-8') as fin:
+        return json.load(fin)
+
+
+def json_dump(obj, file, ensure_ascii=False, indent=None):
+    with open(file, 'w', encoding='utf-8') as fout:
+        json.dump(obj, fout, ensure_ascii=ensure_ascii, indent=indent)
 
 
 if __name__ == '__main__':

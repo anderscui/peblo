@@ -2,11 +2,17 @@
 import json
 import logging
 import sys
+import time
 from pathlib import Path
 
 import typer
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
 
+from peblo.cli.chat.session import create_user_defined_session, calculate_file_hash, create_auto_session, \
+    create_ephemeral_session, append_message
 from peblo.providers import ProviderRegistry
+from peblo.schemas.chat import MessageRoles
 from peblo.tools.qa import qa
 from peblo.tools.summarize import summarize
 from peblo.tools.translate import translate_text
@@ -312,6 +318,76 @@ def docmeta_cmd(
     else:
         for k, v in result.items():
             typer.echo(f'{k}: {v}')
+
+@app.command()
+def chat(
+        file: Path | None = typer.Argument(None, help='Optional file to upload as context for the chat.'),
+        session: str | None = typer.Option(None, '--session', '-s', help='User-defined session name.'),
+        auto: bool = typer.Option(False, '--auto', help='Automatically create session based on the file.'),
+        reset: bool = typer.Option(False, '--reset', help='Reset the session if it exists.'),
+        model: str = typer.Option(
+            DEFAULT_VL_MODEL, "--model", "-m",
+            help="provider:model, e.g. ollama:qwen3-vl:8b-instruct"
+        )
+):
+    """Start to chat, with an optional file context."""
+
+    base_dir = Path.home() / '.cache/peblo/chat_sessions'
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    # create or load a session
+    if session:
+        chat_session = create_user_defined_session(base_dir, session, reset=reset)
+    elif auto and file:
+        content_hash = calculate_file_hash(file)
+        chat_session = create_auto_session(base_dir, content_hash, reset=reset)
+    else:
+        chat_session = create_ephemeral_session()
+
+    # prepare init context
+    context_text = None
+    if file:
+        try:
+            context_text = read_text_file(file)
+        except Exception as e:
+            typer.echo(f'[Warning] failed to read file: {file}: {e}')
+
+    model = model.lower().strip()
+    provider_name, model_name = parse_model(model)
+    provider = load_provider(provider_name, model=model_name)
+    logger.info(f'use provider: {provider}')
+
+    typer.echo(f'Session: {chat_session.session_name}  (mode={chat_session.mode})')
+    typer.echo("Type your message. Type '/exit' to end.\n")
+
+    # chat main loop
+    system_prompt = None
+    if context_text:
+        system_prompt = f'You are chatting about this content: \n\n{context_text}'
+        # only for the first time
+        if not chat_session.history:
+            chat_session = append_message(base_dir, chat_session, role=MessageRoles.system, content=system_prompt)
+
+    while True:
+        # user_input = input('You: ')
+        user_input = prompt('You: ', history=FileHistory(Path.home() / '.cache/peblo/chat_history'))
+        if user_input.strip().lower() in {'/exit', ':q', 'quit'}:
+            typer.echo('See you:)')
+            break
+
+        # add user query to session
+        chat_session = append_message(base_dir, chat_session, role=MessageRoles.user, content=user_input)
+
+        # call LLMs
+        try:
+            assistant_answer = provider.chat(chat_session.to_dict_messages())
+        except Exception as e:
+            typer.echo(f'[Error] provider failed: {e}')
+            time.sleep(0.3)
+            continue
+
+        typer.echo(f'\nAssistant:\n{assistant_answer}\n')
+        chat_session = append_message(base_dir, chat_session, 'assistant', assistant_answer)
 
 
 @app.callback(invoke_without_command=True)

@@ -5,16 +5,19 @@ import sys
 import time
 from pathlib import Path
 
+import click
 import typer
 from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
 
 from peblo.cli.chat.session import create_user_defined_session, calculate_file_hash, create_auto_session, \
     create_ephemeral_session, append_message
+from peblo.config.global_config import load_config
 from peblo.providers import ProviderRegistry
 from peblo.schemas.chat import MessageRoles
 from peblo.tools.qa import qa
 from peblo.tools.summarize import summarize
+from peblo.tools.text_input import load_context_file
 from peblo.tools.translate import translate_text
 from peblo.tools.ocr import ocr_by_llm
 from peblo.tools.image import describe_image
@@ -23,7 +26,9 @@ from peblo.tools.peek import peek
 
 from peblo.cli.loggings import setup_logging
 from peblo.utils.io.pdfs import pdf_to_text, get_pdf_meta
+from peblo.utils.tokenizers import get_tokenizer
 
+global_config = load_config()
 logger = logging.getLogger(__name__)
 
 
@@ -348,7 +353,7 @@ def chat(
     context_text = None
     if file:
         try:
-            context_text = read_text_file(file)
+            context_text = load_context_file(file)
         except Exception as e:
             typer.echo(f'[Warning] failed to read file: {file}: {e}')
 
@@ -358,18 +363,21 @@ def chat(
     logger.info(f'use provider: {provider}')
 
     typer.echo(f'Session: {chat_session.session_name}  (mode={chat_session.mode})')
-    typer.echo("Type your message. Type '/exit' to end.\n")
+    typer.echo("Type your message. Type '/exit', ':q', or 'quit' to quit.\n")
 
     # chat main loop
-    system_prompt = None
     if context_text:
         system_prompt = f'You are chatting about this content: \n\n{context_text}'
+
+        tokenizer = get_tokenizer(model_name)
+        if len(tokenizer.encode(context_text)) > global_config.context_length * 0.5:
+            logger.warning("[Warning] File is large relative to context. Output quality may degrade.")
+
         # only for the first time
         if not chat_session.history:
             chat_session = append_message(base_dir, chat_session, role=MessageRoles.system, content=system_prompt)
 
     while True:
-        # user_input = input('You: ')
         user_input = prompt('You: ', history=FileHistory(Path.home() / '.cache/peblo/chat_history'))
         if user_input.strip().lower() in {'/exit', ':q', 'quit'}:
             typer.echo('See you:)')
@@ -380,13 +388,19 @@ def chat(
 
         # call LLMs
         try:
-            assistant_answer = provider.chat(chat_session.to_dict_messages())
+            typer.echo(f'\nAssistant:\n')
+            answers = []
+            for chunk in provider.chat(chat_session.to_provider_messages_token_window(model_name, global_config.context_length), stream=True):
+                click.secho(chunk, fg='bright_green', nl=False)
+                answers.append(chunk)
+            if answers:
+                typer.echo()
         except Exception as e:
             typer.echo(f'[Error] provider failed: {e}')
             time.sleep(0.3)
             continue
 
-        typer.echo(f'\nAssistant:\n{assistant_answer}\n')
+        assistant_answer = ''.join(answers)
         chat_session = append_message(base_dir, chat_session, 'assistant', assistant_answer)
 
 
@@ -438,4 +452,7 @@ if __name__ == "__main__":
     # python main.py --debug --log-file run.log qa 'How to fix this error?' 'ERROR: FileNotFoundError: config.yaml not found'
     # python main.py --debug pdftext 'Qwen3-VL Technical Report (2025.11).pdf'
     # python main.py --debug docmeta 'Qwen3-VL Technical Report (2025.11).pdf'
+    # python main.py --debug chat
+    # python main.py --debug chat main.py
+    # python main.py --debug chat --session peblo_cli main.py
     app()

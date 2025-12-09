@@ -1,4 +1,6 @@
 # coding=utf-8
+from pathlib import Path
+
 import fitz
 import logging
 
@@ -68,3 +70,60 @@ def get_pdf_meta(pdf_path: str) -> dict:
 
     logger.info(f'PDF meta for `{pdf_path}`: pages={doc.page_count}, scanned={is_scanned}')
     return result
+
+
+def read_pdf_text(path: str | Path, *, start_page: int = 0, end_page: int = None, max_chars: int = None):
+    """
+    Read plain text from a PDF file.
+
+    Args:
+        path (str | Path): PDF file path.
+        start_page: start page index (0-based).
+        end_page: end page index (exclusive).
+        max_chars: maximum characters to read (None = unlimited).
+
+    Returns:
+        str: Extracted text.
+    """
+    # , max_chars: int
+    path = Path(path)
+    if not path.is_file():
+        raise FileNotFoundError(f'PDF file not found: {path}')
+
+    text_parts = []
+    chars_read = 0
+
+    with fitz.open(path) as doc:
+        total_pages = len(doc)
+        if end_page is None:
+            end_page = total_pages
+        end_page = min(end_page, total_pages)
+        start_page = max(0, start_page)
+
+        for i in range(start_page, end_page):
+            page = doc[i]
+            text = page.get_text('text')
+
+            if not text:
+                continue
+
+            if max_chars is not None:
+                remaining = max_chars - chars_read
+                if remaining <= 0:
+                    break
+                if len(text) > remaining:
+                    text_parts.append(text[:remaining])
+                    break
+                else:
+                    text_parts.append(text)
+                    chars_read += len(text)
+            else:
+                text_parts.append(text)
+                chars_read += len(text)
+
+    return '\n'.join(text_parts).strip()
+
+
+if __name__ == '__main__':
+    file = '/Users/andersc/Downloads/cool nlp papers/RAGAS - Automated Evaluation of Retrieval Augmented Generation （2023）.pdf'
+    print(read_pdf_text(file, max_chars=1000))

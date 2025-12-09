@@ -39,7 +39,7 @@ class OllamaProvider(BaseLlmProvider):
             if data_chunk:
                 yield data_chunk
 
-    def chat(self, messages, stream=False):
+    def chat(self, messages, stream=False, **kwargs):
         payload = {"model": self.model, "messages": messages, "stream": stream}
         resp = self._request("api/chat", payload, stream=stream)
         if stream:

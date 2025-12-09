@@ -30,7 +30,7 @@ def save_session(base_dir: Path, session: ChatSession) -> None:
     data = session.model_dump()
 
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2, default=str)
 
 
 def calculate_file_hash(path: Path) -> str:

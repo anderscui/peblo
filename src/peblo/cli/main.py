@@ -25,9 +25,9 @@ from peblo.tools.quote import quote_check
 from peblo.tools.peek import peek
 
 from peblo.cli.loggings import setup_logging
-from peblo.utils.io.web import is_url, load_from_url_trafilatura
-from peblo.utils.io.pdf import pdf_to_text, get_pdf_meta
-from peblo.utils.llm.tokenizers import get_tokenizer
+from peblo.commons.io.web import is_url, load_from_url_trafilatura
+from peblo.commons.io.pdf import pdf_to_text, get_pdf_meta
+from peblo.commons.llm.tokenizers import get_tokenizer
 
 global_config = load_config()
 logger = logging.getLogger(__name__)

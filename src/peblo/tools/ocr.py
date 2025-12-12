@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from peblo.providers import BaseLlmProvider
-from peblo.utils.io.images import image_to_base64
+from peblo.commons.io.images import image_to_base64
 
 
 def ocr_by_llm(provider: BaseLlmProvider, file_path: str) -> dict[str, str]:

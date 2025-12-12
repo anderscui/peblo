@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 
 from peblo.tools.summarize import simple_summarizer
-from peblo.utils.io.files import is_safe_text_file
-from peblo.utils.io.pdf import read_pdf_text
+from peblo.commons.io.files import is_safe_text_file
+from peblo.commons.io.pdf import read_pdf_text
 
 MAX_FILE_SIZE = 5 * 1024 * 1024   # 5 MB
 MAX_TEXT_CHARS = 5 * 1024 * 1024  # Max chars sent to models

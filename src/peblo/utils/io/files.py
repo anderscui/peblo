@@ -80,4 +80,4 @@ def json_dump(obj, file, ensure_ascii=False, indent=None):
 
 
 if __name__ == '__main__':
-    assert is_safe_text_file('texts.py')
+    assert is_safe_text_file('../text.py')

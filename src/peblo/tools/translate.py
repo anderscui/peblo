@@ -1,6 +1,6 @@
 # coding=utf-8
 from peblo.providers import BaseLlmProvider
-from peblo.utils.cultures import detect_lang
+from peblo.utils.culture import detect_lang
 
 
 def translate_text(provider: BaseLlmProvider, text: str, target_lang: str = 'zh'):

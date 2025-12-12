@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from peblo.providers import BaseLlmProvider
-from peblo.utils.images import image_to_base64
+from peblo.utils.io.images import image_to_base64
 
 
 def describe_image(provider: BaseLlmProvider, file_path: str) -> dict[str, str]:

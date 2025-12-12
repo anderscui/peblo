@@ -4,7 +4,7 @@ from typing import Optional, Literal
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-from peblo.utils.tokenizers import get_tokenizer, count_tokens
+from peblo.utils.llm.tokenizers import get_tokenizer, count_tokens
 
 MAX_ROUNDS = 20
 

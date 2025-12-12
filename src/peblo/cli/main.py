@@ -25,6 +25,7 @@ from peblo.tools.quote import quote_check
 from peblo.tools.peek import peek
 
 from peblo.cli.loggings import setup_logging
+from peblo.utils.io.https import is_url, load_from_url_trafilatura
 from peblo.utils.io.pdfs import pdf_to_text, get_pdf_meta
 from peblo.utils.tokenizers import get_tokenizer
 
@@ -326,7 +327,7 @@ def docmeta_cmd(
 
 @app.command()
 def chat(
-        file: Path | None = typer.Argument(None, help='Optional file to upload as context for the chat.'),
+        file: str | None = typer.Argument(None, help='File path or URL to load as chat context.'),
         session: str | None = typer.Option(None, '--session', '-s', help='User-defined session name.'),
         auto: bool = typer.Option(False, '--auto', help='Automatically create session based on the file.'),
         reset: bool = typer.Option(False, '--reset', help='Reset the session if it exists.'),
@@ -352,10 +353,17 @@ def chat(
     # prepare init context
     context_text = None
     if file:
-        try:
-            context_text = load_context_file(file)
-        except Exception as e:
-            typer.echo(f'[Warning] failed to read file: {file}: {e}')
+        if is_url(file):
+            typer.echo(f'[Info] Loading URL: {file}')
+            try:
+                context_text = load_from_url_trafilatura(file)
+            except Exception as e:
+                typer.echo(f'[Warning] failed to read file: {file}: {e}')
+        else:
+            try:
+                context_text = load_context_file(file)
+            except Exception as e:
+                typer.echo(f'[Warning] failed to read file: {file}: {e}')
 
     model = model.lower().strip()
     provider_name, model_name = parse_model(model)
@@ -455,4 +463,5 @@ if __name__ == "__main__":
     # python main.py --debug chat
     # python main.py --debug chat main.py
     # python main.py --debug chat --session peblo_cli main.py
+    # python main.py --debug chat https://arxiv.org/abs/2512.02556
     app()

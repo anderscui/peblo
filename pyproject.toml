@@ -1,13 +1,29 @@
 [project]
 name = "peblo"
-version = "0.0.2"
+version = "0.0.3"
 description = "Peblo is a growing collection of small, everyday intelligent tools."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+
 authors=[
     {name='Anders Cui'}
 ]
+#maintainers=[
+#    {name='Anders Cui'}
+#]
+
+keywords = ["NLP", "LLM", "CLI"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing",
+]
+
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "langdetect>=1.0.9",
@@ -20,6 +36,13 @@ dependencies = [
     "trafilatura>=2.0.0",
     "typer>=0.20.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/anderscui/peblo"
+Repository = "https://github.com/anderscui/peblo"
+#Issues = "https://github.com/anderscui/peblo/issues"
+#Documentation = "https://github.com/anderscui/peblo/wiki"
+#Changelog = "https://github.com/anderscui/peblo/blob/main/CHANGELOG.md"
 
 [project.scripts]
 peblo = "peblo.cli.main:app"

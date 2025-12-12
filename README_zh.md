@@ -1,48 +1,48 @@
 # Peblo
 
-✨ **Peblo** is a collection of practical, everyday AI-powered utilities — simple, fast, and CLI-friendly.
+✨ **Peblo** 是一组实用、简洁、面向日常使用的 AI 工具集合 —— 轻量、快速，并且非常适合命令行环境。
 
-Peblo is under active development and provides a set of tested tools for text, images, documents, and question-answering.
+Peblo 正在积极开发中，已经提供了一组经过测试的工具，覆盖文本、图片、文档处理以及问答功能。
 
-English | [中文文档](./README_zh.md)
-
----
-
-## ✨ Features
-
-Peblo currently includes:
-
-- **Translate** — text translation via local or remote LLMs  
-- **Summarize** — short summaries and keywords
-- **OCR** — extract text from images
-- **Image Caption** — describe images  
-- **Quote Tools** — quote search & verification  
-- **Peek** — preview text, JSON, images, and documents  
-- **Q&A** — ask questions about text and files  
-- **PDF / Document Tools** — extract text and metadata  
-- **Chat** — an interactive LLM-powered CLI chat session, you can chat with docs or urls.  
-
-All features can be used directly from the command line.
+中文 | [English](./README.md)
 
 ---
 
-## 📦 Installation
+## ✨ 功能特性
+
+Peblo 目前包含：
+
+* **Translate** — 使用本地或远程 LLM 进行文本翻译
+* **Summarize** — 生成短摘要与关键词
+* **OCR** — 从图片中提取文字
+* **Image Caption** — 自动生成图片描述
+* **Quote Tools** — 引文搜索与验证
+* **Peek** — 预览文本、JSON、图片与文档
+* **Q&A** — 针对文本或文件进行问答
+* **PDF / Document Tools** — 文本提取与文档元数据读取
+* **Chat** — 基于 LLM 的交互式命令行聊天，可对文档或 URL 进行对话
+
+以上所有功能均可直接在命令行中使用。
+
+---
+
+## 📦 安装
 
 ```bash
 pip install peblo
-````
+```
 
 ---
 
-## 🖥 CLI Usage
+## 🖥 CLI 用法
 
-Show help:
+查看帮助：
 
 ```bash
 peblo --help
 ```
 
-Show version:
+查看版本：
 
 ```bash
 peblo --version
@@ -50,9 +50,9 @@ peblo --version
 
 ---
 
-## 🔧 Tested Examples
+## 🔧 已测试的示例命令
 
-Below are real, tested commands:
+以下命令均已在真实环境中测试通过：
 
 ```bash
 peblo
@@ -88,13 +88,13 @@ peblo --debug chat https://arxiv.org/abs/2512.02556
 
 ---
 
-## 📄 License
+## 📄 许可证
 
-MIT License.
+MIT License。
 
 ---
 
-## 🤝 Contributing
+## 🤝 参与贡献
 
-Contributions are welcome!
-Feel free to open an issue or submit a pull request on GitHub.
+欢迎贡献！
+欢迎在 GitHub 上提 issue 或提交 Pull Request。

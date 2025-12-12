@@ -5,6 +5,9 @@ description = "Peblo is a growing collection of small, everyday intelligent tool
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+authors=[
+    {name='Anders Cui'}
+]
 dependencies = [
     "langdetect>=1.0.9",
     "prompt-toolkit>=3.0.52",
@@ -16,6 +19,15 @@ dependencies = [
     "typer>=0.20.0",
 ]
 
+[project.scripts]
+peblo = "peblo.cli.main:app"
+
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+peblo = ["**/*.txt", "**/*.json", "**/*.yaml"]

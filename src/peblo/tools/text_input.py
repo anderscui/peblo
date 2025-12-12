@@ -134,8 +134,7 @@ def read_file_text(path: str | Path, max_chars: int | None = None):
         raise FileNotFoundError(path)
 
     suffix = path.suffix.lower()
-    if suffix in {'.txt', '.md', '.rtf', '.json', '.csv', '.yaml', '.yml', '.xml',
-                  '.py', '.java', '.rs'}:
+    if is_safe_text_file(path):
         return read_plain_text(path, max_chars=max_chars)
     elif suffix == '.pdf':
         return read_pdf_text(path, max_chars=max_chars)

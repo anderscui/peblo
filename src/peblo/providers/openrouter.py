@@ -176,9 +176,10 @@ class OpenRouterProvider(BaseLlmProvider):
 
 
 class OpenRouterModels:
-    # gpt_5_chat = 'openai/gpt-5-chat'  # 不建议通过 API 调用
     gpt_audio = 'openai/gpt-audio'  # $2.5-10, 2026.01
     gpt_audio_mini = 'openai/gpt-audio-mini'  # $0.6-2.4, 2026.01
+    gpt_5_3_chat = 'openai/gpt-5.3-chat'  # $1.75-14, $100/K web search, 2026.03
+    gpt_5_3_codex = 'openai/gpt-5.3-codex'  # $1.75-14, $10/K web search, 2026.02
     gpt_5_2_codex = 'openai/gpt-5.2-codex'  # $1.75-14, $10/K web search, 2026.01
     gpt_5_2 = 'openai/gpt-5.2'  # $1.75-14, $10/K web search, 2025.12
     gpt_5_2_chat = 'openai/gpt-5.2-chat'  # $1.75-14, $10/K web search, 2025.12, GPT-5.2 Instant
@@ -187,8 +188,6 @@ class OpenRouterModels:
     gpt_5_1 = 'openai/gpt-5.1'  # $1.25-10, $10/K web search, 2025.11
     gpt_5_1_chat = 'openai/gpt-5.1-chat'  # $1.25-10, $10/K web search, 2025.11
     gpt_5_1_codex = 'openai/gpt-5.1-codex'  # $1.25-10
-    gpt_5_1_codex_mini = 'openai/gpt-5.1-codex-mini'  # $0.25-2
-    gpt_5_1_codex_max = 'openai/gpt-5.1-codex-max'  # $1.25-10, 2025.12
 
     gpt_5 = 'openai/gpt-5'  # coding  # $1.25-10
     gpt_5_mini = 'openai/gpt-5-mini'  # $0.25-2
@@ -229,6 +228,7 @@ class OpenRouterModels:
     claude_opus_4_5 = 'anthropic/claude-opus-4.5'  # coding, $5-25, 2025.11
     claude_opus_4_1 = 'anthropic/claude-opus-4.1'  # coding, $15-75, 2025.08
     claude_opus_4 = 'anthropic/claude-opus-4'  # coding, $15-75, 2025.05
+    claude_sonnet_4_6 = 'anthropic/claude-sonnet-4.6'  # coding, $3-15, 2026.02
     claude_sonnet_4_5 = 'anthropic/claude-sonnet-4.5'  # coding, $3-15, 2025.09
     claude_sonnet_4 = 'anthropic/claude-sonnet-4'  # image, coding, $3-15, 2025.05
     claude_sonnet_3_7 = 'anthropic/claude-3.7-sonnet'
@@ -244,16 +244,17 @@ class OpenRouterModels:
 
     gemini_flash_2_5_image = 'google/gemini-2.5-flash-image'  # $0.3-2.5, Nano Banan, 2025.10
 
-    gemini_emb_1 = 'google/gemini-embedding-001'  # $0.15, 2025.03
+    gemini_emb_1 = 'google/gemini-embedding-001'  # $0.15, 2025.10
 
     # qwen
+    qwen3_5_397b = 'qwen/qwen3.5-397b-a17b'  # 0.55-3.5, 2026.02
+    qwen3_5_flash = 'qwen/qwen3.5-flash-02-23'  # 0.1-0.4, 2026.02
+    qwen3_5_35b = 'qwen/qwen3.5-35b-a3b'  # 0.25-2, 2026.02
     qwen3_max_thinking = 'qwen/qwen3-max-thinking'  # 1.2-6, 2026.02
     qwen3_max = 'qwen/qwen3-max'  # 1.2-6, 2025.09
-    qwen3_plus = 'qwen/qwen-plus'  # 0.4-1.2
     qwen3_vl_235b_thinking = 'qwen/qwen3-vl-235b-a22b-thinking'  # 0.45-3.5, 2025.09
     qwen3_vl_235b_instruct = 'qwen/qwen3-vl-235b-a22b-instruct'  # 0.2-0.88, 2025.09
     qwen3_vl_30b_instruct = 'qwen/qwen3-vl-30b-a3b-instruct'  # 0.15-0.6, 2025.10
-    qwen3_vl_32b_instruct = 'qwen/qwen3-vl-32b-instruct'  # 0.5-1.5, 2025.10
 
     qwen3_coder_next = 'qwen/qwen3-coder-next'  # $0.07-0.3, 2026.02, 80B-A3B
     qwen3_coder_plus = 'qwen/qwen3-coder-plus'  # $1-5, 2025.09
@@ -268,24 +269,19 @@ class OpenRouterModels:
     deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model, $0.2-0.8
     deepseek_v3_0324 = 'deepseek/deepseek-chat-v3-0324'  # 685B, MoE model
     kimi_k2_5 = 'moonshotai/kimi-k2.5'  # coding, $0.45-2.5 2026.01
-    kimi_k2 = 'moonshotai/kimi-k2'  # coding
     glm_5 = 'z-ai/glm-5'  # $0.8-2.56, 2026.02
     glm_4_7_flash = 'z-ai/glm-4.7-flash'  # $0.06-0.4, 2026.01
     glm_4_7 = 'z-ai/glm-4.7'  # coding, $0.4-1.5, 2025.12
-    glm_4_6 = 'z-ai/glm-4.6'  # coding, $0.4-1.75, 2025.09
     glm_4_6v = 'z-ai/glm-4.6v'  # vision, $0.3-0.9, 2025.12
     minimax_m2_5 = 'minimax/minimax-m2.5'  # $0.3-1.2, coding, 2026.02
     minimax_m2_her = 'minimax/minimax-m2-her'  # dialog, $0.3-1.2, 2026.01
-    minimax_m2_1 = 'minimax/minimax-m2.1'  # $0.27-0.95, coding, 2025.12
     minimax_m2 = 'minimax/minimax-m2'  # $0.255-1.0, coding, 2025.10
 
     grok_4 = 'x-ai/grok-4'  # $3-15
     grok_4_fast = 'x-ai/grok-4-fast'  # $0.2-0.5
     grok_code_fast_1 = 'x-ai/grok-code-fast-1'  # coding, translation, $0.2-1.5
 
-    mistral_small_3_instruct = 'mistralai/mistral-small-24b-instruct-2501'  # 24B, $0.05-0.08
-    mistral_small_3_2_instruct = 'mistralai/mistral-small-3.2-24b-instruct'  # 24B, $0.06-0.18
-    mistral_nemo = 'mistralai/mistral-nemo'  # 12B, $0.02-0.04
+    mistral_small_creative = 'mistralai/mistral-small-creative'  # 24B, $0.05-0.08
 
 
 if __name__ == '__main__':

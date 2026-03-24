@@ -178,6 +178,10 @@ class OpenRouterProvider(BaseLlmProvider):
 class OpenRouterModels:
     gpt_audio = 'openai/gpt-audio'  # $2.5-10, 2026.01
     gpt_audio_mini = 'openai/gpt-audio-mini'  # $0.6-2.4, 2026.01
+    gpt_5_4_pro = 'openai/gpt-5.4-pro'  # $30-180, $10/K web search, 2026.03
+    gpt_5_4 = 'openai/gpt-5.4'  # $2.5-15, $10/K web search, 2026.03
+    gpt_5_4_mini = 'openai/gpt-5.4-mini'  # $0.75-4.5, $10/K web search, 2026.03
+    gpt_5_4_nano = 'openai/gpt-5.4-nano'  # $0.2-1.25, $10/K web search, 2026.03
     gpt_5_3_chat = 'openai/gpt-5.3-chat'  # $1.75-14, $100/K web search, 2026.03
     gpt_5_3_codex = 'openai/gpt-5.3-codex'  # $1.75-14, $10/K web search, 2026.02
     gpt_5_2_codex = 'openai/gpt-5.2-codex'  # $1.75-14, $10/K web search, 2026.01
@@ -280,8 +284,6 @@ class OpenRouterModels:
     grok_4 = 'x-ai/grok-4'  # $3-15
     grok_4_fast = 'x-ai/grok-4-fast'  # $0.2-0.5
     grok_code_fast_1 = 'x-ai/grok-code-fast-1'  # coding, translation, $0.2-1.5
-
-    mistral_small_creative = 'mistralai/mistral-small-creative'  # 24B, $0.05-0.08
 
 
 if __name__ == '__main__':

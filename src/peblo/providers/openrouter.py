@@ -270,19 +270,20 @@ class OpenRouterModels:
     gemma_4_26b = 'google/gemma-4-26b-a4b-it'
 
     # qwen
-    qwen3_5_397b = 'qwen/qwen3.5-397b-a17b'  # 0.55-3.5, 2026.02
-    qwen3_5_flash = 'qwen/qwen3.5-flash-02-23'  # 0.1-0.4, 2026.02
-    qwen3_5_35b = 'qwen/qwen3.5-35b-a3b'  # 0.25-2, 2026.02
-    qwen3_max_thinking = 'qwen/qwen3-max-thinking'  # 1.2-6, 2026.02
-    qwen3_max = 'qwen/qwen3-max'  # 1.2-6, 2025.09
-    qwen3_vl_235b_thinking = 'qwen/qwen3-vl-235b-a22b-thinking'  # 0.45-3.5, 2025.09
+    qwen3_6_max = 'qwen/qwen3.6-max-preview'  # 1.3-7.8, 2026.04
+    qwen3_6_plus = 'qwen/qwen3.6-plus'  # $0.325-1.95, 2026.04
+    qwen3_6_flash = 'qwen/qwen3.6-flash'  # 0.25-1.5, 2026.04
+    qwen3_5_flash = 'qwen/qwen3.5-flash-02-23'  # 0.065-0.26, 2026.02
+    qwen3_max_thinking = 'qwen/qwen3-max-thinking'  # $0.78-3.9, 2026.02
+    qwen3_max = 'qwen/qwen3-max'  # $0.78-3.9, 2025.09
+    qwen3_vl_235b_thinking = 'qwen/qwen3-vl-235b-a22b-thinking'  # 0.26-2.6, 2025.09
     qwen3_vl_235b_instruct = 'qwen/qwen3-vl-235b-a22b-instruct'  # 0.2-0.88, 2025.09
-    qwen3_vl_30b_instruct = 'qwen/qwen3-vl-30b-a3b-instruct'  # 0.15-0.6, 2025.10
+    qwen3_vl_30b_instruct = 'qwen/qwen3-vl-30b-a3b-instruct'  # $0.13-0.52, 2025.10
 
-    qwen3_coder_next = 'qwen/qwen3-coder-next'  # $0.07-0.3, 2026.02, 80B-A3B
-    qwen3_coder_plus = 'qwen/qwen3-coder-plus'  # $1-5, 2025.09
-    qwen3_coder = 'qwen/qwen3-coder'  # $0.22-0.95, 2025.07, Qwen3-Coder-480B-A35B-Instruct
-    qwen3_coder_flash = 'qwen/qwen3-coder-flash'  # coding, $0.3-15, 2025.09
+    qwen3_coder_next = 'qwen/qwen3-coder-next'  # 80B-A3B, $0.14-0.8, 2026.02
+    qwen3_coder_plus = 'qwen/qwen3-coder-plus'  # $0.65-3.25, 2025.09
+    qwen3_coder = 'qwen/qwen3-coder'  # $0.22-1.8, 2025.07, Qwen3-Coder-480B-A35B-Instruct
+    qwen3_coder_flash = 'qwen/qwen3-coder-flash'  # coding, $0.195-0.975, 2025.09
 
     qwen3_emb_8b = 'qwen/qwen3-embedding-8b'  # $0.01
     qwen3_emb_4b = 'qwen/qwen3-embedding-4b'  # $0.02
@@ -290,9 +291,6 @@ class OpenRouterModels:
 
     deepseek_v4_flash = 'deepseek/deepseek-v4-flash'  # , $0.14-0.28, 2026.04
     deepseek_v4_pro = 'deepseek/deepseek-v4-pro'  # , $0.435-0.87, 2026.04
-    # deepseek_v3_2 = 'deepseek/deepseek-v3.2'  # roleplay, $0.25-0.38, 2025.12
-    # deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model, $0.2-0.8, 2025.08
-    # deepseek_v3_0324 = 'deepseek/deepseek-chat-v3-0324'  # 685B, MoE model, 2025.03
     deepseek_r1 = 'deepseek/deepseek-r1'  # 671b-37b, $0.7-2.5, 2025.01
 
     kimi_k2_6 = 'moonshotai/kimi-k2.6'  # coding, $0.75-3.5 2026.04

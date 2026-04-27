@@ -178,6 +178,8 @@ class OpenRouterProvider(BaseLlmProvider):
 class OpenRouterModels:
     gpt_audio = 'openai/gpt-audio'  # $2.5-10, 2026.01
     gpt_audio_mini = 'openai/gpt-audio-mini'  # $0.6-2.4, 2026.01
+    gpt_5_5_pro = 'openai/gpt-5.5-pro'  # $30-180, 2026.04
+    gpt_5_5 = 'openai/gpt-5.5'  # $5-30, 2026.04
     gpt_5_4_pro = 'openai/gpt-5.4-pro'  # $30-180, $10/K web search, 2026.03
     gpt_5_4 = 'openai/gpt-5.4'  # $2.5-15, $10/K web search, 2026.03
     gpt_5_4_mini = 'openai/gpt-5.4-mini'  # $0.75-4.5, $10/K web search, 2026.03
@@ -205,7 +207,9 @@ class OpenRouterModels:
     gpt_5_pro = 'openai/gpt-5-pro'  # $15-120, 2025.10
     gpt_5_codex = 'openai/gpt-5-codex'  # $1.25-10, 2025.09
     gpt_4o_audio = 'openai/gpt-4o-audio-preview'  # $2.5-10, 2025.08
+    gpt_4o_mini_tts = 'openai/gpt-4o-mini-tts-2025-12-15'  # $0.6/M, 2026.04
 
+    gpt_5_4_image_2 = 'openai/gpt-5.4-image-2'  # $8-15
     gpt_5_image = 'openai/gpt-5-image'  # $10-10, $10/K web search, 2025.10
     gpt_5_image_mini = 'openai/gpt-5-image-mini'  # $2.50-2, $10/K web search, 2025.10
     gpt_codex_mini = 'openai/codex-mini'  # $1.5-6
@@ -228,9 +232,10 @@ class OpenRouterModels:
     openai_emb_3_small = 'openai/text-embedding-3-small'  # $0.02
     openai_emb_2_ada = 'openai/text-embedding-ada-002' # $0.10
 
+    claude_opus_4_7 = 'anthropic/claude-opus-4.7'  # coding, $5-25, 2026.04
     claude_opus_4_6 = 'anthropic/claude-opus-4.6'  # coding, $5-25, 2026.02
-    claude_opus_4_5 = 'anthropic/claude-opus-4.5'  # coding, $5-25, 2025.11
-    claude_opus_4_1 = 'anthropic/claude-opus-4.1'  # coding, $15-75, 2025.08
+    # claude_opus_4_5 = 'anthropic/claude-opus-4.5'  # coding, $5-25, 2025.11
+    # claude_opus_4_1 = 'anthropic/claude-opus-4.1'  # coding, $15-75, 2025.08
     claude_opus_4 = 'anthropic/claude-opus-4'  # coding, $15-75, 2025.05
     claude_sonnet_4_6 = 'anthropic/claude-sonnet-4.6'  # coding, $3-15, 2026.02
     claude_sonnet_4_5 = 'anthropic/claude-sonnet-4.5'  # coding, $3-15, 2025.09
@@ -240,15 +245,29 @@ class OpenRouterModels:
     claude_haiku_3_5 = 'anthropic/claude-3.5-haiku'  # fastest model for daily tasks
 
     # google: translation, coding
-    gemini_flash_lite_2_5 = 'google/gemini-2.5-flash-lite'  # cheap, 2025.07
-    gemini_flash_2_5 = 'google/gemini-2.5-flash'  # text, image; translation, $0.3-2.5
-    gemini_pro_2_5 = 'google/gemini-2.5-pro'  # text, image; translation, $1.25-10
-    gemini_flash_2 = 'google/gemini-2.0-flash-001'  # translation, $0.1-0.4
-    gemini_flash_lite_2 = 'google/gemini-2.0-flash-lite-001'  # $0.075-0.3
+    gemini_flash_lite_3_1 = 'google/gemini-3.1-flash-lite-preview'  # $0.25-1.5, 2026.03
+    gemini_pro_3_1 = 'google/gemini-3.1-pro-preview'  # $2-12, 2026.02
+    gemini_pro_3_1_tools = 'google/gemini-3.1-pro-preview-customtools'  # $2-12, 2026.02
+    gemini_flash_3 = 'google/gemini-3-flash-preview'  # $0.5-3, 2025.12
+    gemini_flash_2_5 = 'google/gemini-2.5-flash'  # translation, $0.3-2.5, 2025.06
+    gemini_flash_lite_2_5 = 'google/gemini-2.5-flash-lite'  # translation, $0.1-0.4, 2025.07
+    gemini_pro_2_5 = 'google/gemini-2.5-pro'  # translation, $1.25-10, 2025.06
 
+    gemini_flash_tts_3_1 = 'google/gemini-3.1-flash-tts-preview'  # text-to-speech, $1-20, 2026.04
     gemini_flash_2_5_image = 'google/gemini-2.5-flash-image'  # $0.3-2.5, Nano Banan, 2025.10
 
+    google_veo_3_1_fast = 'google/veo-3.1-fast'  # video gen, $0.1 per sec, 2026.04
+    google_veo_3_1_lite = 'google/veo-3.1-lite'  # video gen, $0.05 per sec, 2026.04
+    google_veo_3_1 = 'google/veo-3.1'  # video gen, $0.4 per sec, 2026.03
+
+    google_lyria_3_pro = 'google/lyria-3-pro-preview'  # music gen, $0.08 per song, 2026.03
+    google_lyria_3_clip = 'google/lyria-3-clip-preview'  # music gen, $0.04 per song, 2026.03
+
     gemini_emb_1 = 'google/gemini-embedding-001'  # $0.15, 2025.10
+    gemini_emb_2 = 'google/gemini-embedding-2-preview'  # $0.2, 2026.04
+
+    gemma_4_31b = 'google/gemma-4-31b-it'
+    gemma_4_26b = 'google/gemma-4-26b-a4b-it'
 
     # qwen
     qwen3_5_397b = 'qwen/qwen3.5-397b-a17b'  # 0.55-3.5, 2026.02
@@ -269,14 +288,20 @@ class OpenRouterModels:
     qwen3_emb_4b = 'qwen/qwen3-embedding-4b'  # $0.02
     qwen3_emb_06b = 'qwen/qwen3-embedding-0.6b'  # $0.01
 
-    deepseek_v3_2 = 'deepseek/deepseek-v3.2'  # roleplay, $0.25-0.38, 2025.12
-    deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model, $0.2-0.8
-    deepseek_v3_0324 = 'deepseek/deepseek-chat-v3-0324'  # 685B, MoE model
-    kimi_k2_5 = 'moonshotai/kimi-k2.5'  # coding, $0.45-2.5 2026.01
+    deepseek_v4_flash = 'deepseek/deepseek-v4-flash'  # , $0.14-0.28, 2026.04
+    deepseek_v4_pro = 'deepseek/deepseek-v4-pro'  # , $0.435-0.87, 2026.04
+    # deepseek_v3_2 = 'deepseek/deepseek-v3.2'  # roleplay, $0.25-0.38, 2025.12
+    # deepseek_v3_1 = 'deepseek/deepseek-chat-v3.1'  # 671B, MoE model, $0.2-0.8, 2025.08
+    # deepseek_v3_0324 = 'deepseek/deepseek-chat-v3-0324'  # 685B, MoE model, 2025.03
+    deepseek_r1 = 'deepseek/deepseek-r1'  # 671b-37b, $0.7-2.5, 2025.01
+
+    kimi_k2_6 = 'moonshotai/kimi-k2.6'  # coding, $0.75-3.5 2026.04
+    kimi_k2_5 = 'moonshotai/kimi-k2.5'  # coding, $0.44-2 2026.01
     glm_5 = 'z-ai/glm-5'  # $0.8-2.56, 2026.02
     glm_4_7_flash = 'z-ai/glm-4.7-flash'  # $0.06-0.4, 2026.01
     glm_4_7 = 'z-ai/glm-4.7'  # coding, $0.4-1.5, 2025.12
     glm_4_6v = 'z-ai/glm-4.6v'  # vision, $0.3-0.9, 2025.12
+    minimax_m2_7 = 'minimax/minimax-m2.7'  # $0.3-1.2, coding, 2026.03
     minimax_m2_5 = 'minimax/minimax-m2.5'  # $0.3-1.2, coding, 2026.02
     minimax_m2_her = 'minimax/minimax-m2-her'  # dialog, $0.3-1.2, 2026.01
     minimax_m2 = 'minimax/minimax-m2'  # $0.255-1.0, coding, 2025.10

@@ -206,6 +206,11 @@ class OpenRouterModels:
     gpt_4o = 'openai/gpt-4o-2024-11-20'  # $2.5-10, 2024.11
     gpt_4o_mini = 'openai/gpt-4o-mini'  # $0.15-0.6, 2024.07
 
+    gpt_whisper_large_3_turbo = 'openai/whisper-large-v3-turbo'  # speech recognition, $0.04/hour, 2026.05
+    gpt_whisper_large_3 = 'openai/whisper-large-v3'  # speech recognition, $0.111/hour, 2026.05
+    gpt_whisper_1 = 'openai/whisper-1'  # speech recognition, $0.006/minute, 2026.04
+    gpt_4o_transcribe_mini = 'openai/gpt-4o-mini-transcribe'  # speech-to-text, $1.25/M, 2026.05
+    gpt_4o_transcribe = 'openai/gpt-4o-transcribe'  # speech-to-text, $2.5/M, 2026.04
     gpt_4o_audio = 'openai/gpt-4o-audio-preview'  # $2.5-10, 2025.08
     gpt_4o_mini_tts = 'openai/gpt-4o-mini-tts-2025-12-15'  # $0.6/M, 2026.04
 
@@ -231,6 +236,7 @@ class OpenRouterModels:
     openai_emb_3_small = 'openai/text-embedding-3-small'  # $0.02
     openai_emb_2_ada = 'openai/text-embedding-ada-002' # $0.10
 
+    claude_opus_4_7_fast = 'anthropic/claude-opus-4.7-fast'  # $30-150, 2026.05
     claude_opus_4_7 = 'anthropic/claude-opus-4.7'  # coding, $5-25, 2026.04
     claude_opus_4_6 = 'anthropic/claude-opus-4.6'  # coding, $5-25, 2026.02
     # claude_opus_4_5 = 'anthropic/claude-opus-4.5'  # coding, $5-25, 2025.11
@@ -244,7 +250,7 @@ class OpenRouterModels:
     # claude_haiku_3_5 = 'anthropic/claude-3.5-haiku'  # fastest model for daily tasks, 2024.11
 
     # google: translation, coding
-    gemini_flash_lite_3_1 = 'google/gemini-3.1-flash-lite-preview'  # $0.25-1.5, 2026.03
+    gemini_flash_lite_3_1 = 'google/gemini-3.1-flash-lite'  # mm(text, image, video, file, audio), $0.25-1.5, 2026.05
     gemini_pro_3_1 = 'google/gemini-3.1-pro-preview'  # $2-12, 2026.02
     gemini_pro_3_1_tools = 'google/gemini-3.1-pro-preview-customtools'  # $2-12, 2026.02
     gemini_flash_3 = 'google/gemini-3-flash-preview'  # $0.5-3, 2025.12
@@ -252,6 +258,7 @@ class OpenRouterModels:
     gemini_flash_lite_2_5 = 'google/gemini-2.5-flash-lite'  # translation, $0.1-0.4, 2025.07
     gemini_pro_2_5 = 'google/gemini-2.5-pro'  # translation, $1.25-10, 2025.06
 
+    gemini_chirp_3 = 'google/chirp-3'  # speech-to-text, $0.016/minute, 2026.05
     gemini_flash_tts_3_1 = 'google/gemini-3.1-flash-tts-preview'  # text-to-speech, $1-20, 2026.04
     gemini_flash_2_5_image = 'google/gemini-2.5-flash-image'  # $0.3-2.5, Nano Banan, 2025.10
 
@@ -306,6 +313,7 @@ class OpenRouterModels:
     minimax_m2_her = 'minimax/minimax-m2-her'  # dialog, $0.3-1.2, 2026.01
     minimax_m2 = 'minimax/minimax-m2'  # $0.255-1.0, coding, 2025.10
 
+    grok_4_3 = 'x-ai/grok-4.3'  # $1.25-2.5, 2026.05
     grok_4_20_multi_agent = 'x-ai/grok-4.20-multi-agent'  # $2-6, 2026.03
     grok_4_20 = 'x-ai/grok-4.20'  # $2-6, 2026.03
     grok_4_1_fast = 'x-ai/grok-4.1-fast'  # $0.2-0.5, 2025.11

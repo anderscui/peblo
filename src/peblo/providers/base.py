@@ -1,4 +1,6 @@
 # coding=utf-8
+from pathlib import Path
+
 import math
 from abc import ABC, abstractmethod
 from typing import Any
@@ -10,12 +12,44 @@ from peblo.schemas.models import ModelInfo
 load_dotenv()
 
 
+class ProviderError(Exception):
+    pass
+
+
+class UnsupportedCapabilityError(ProviderError):
+    pass
+
+
+class Capability:
+    CHAT = 'chat'
+    VISION = 'vision'
+
+    IMAGE = 'image'
+    AUDIO = 'audio'
+    VIDEO = 'video'
+
+    SPEECH_TO_TEXT = 'stt'
+    TEXT_TO_SPEECH = 'tts'
+
+    EMBEDDING = 'embedding'
+    RERANK = 'rerank'
+
+    TOOL = 'tool'
+    STRUCTURED_OUTPUT = 'structured_output'
+    REASONING = 'reasoning'
+    WEB_SEARCH = 'web_search'
+    # LOGPROBS = 'logprobs'
+
+
 class BaseProvider(ABC):
     """Top-level abstract provider."""
 
     @property
     def capabilities(self) -> set[str]:
         return set()
+
+    def supports(self, capability: str) -> bool:
+        return capability in self.capabilities
 
 
 class BaseLlmProvider(BaseProvider):

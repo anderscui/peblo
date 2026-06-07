@@ -39,8 +39,8 @@ class ModelInfo(BaseModel):
     parameter_size: Optional[str] = None  # '8B', '30B', etc.
     context_length: Optional[int] = None
     modality: Optional[str] = None
-    input_modality: list[Literal['text', 'image', 'audio', 'video', 'file']] = Field(default_factory=lambda: ['text'])
-    output_modality: list[Literal['text', 'image', 'audio', 'video', 'file']] = Field(default_factory=lambda: ['text'])
+    input_modality: list[Literal['text', 'image', 'audio', 'video', 'file']] = Field(default_factory=lambda: [])
+    output_modality: list[Literal['text', 'image', 'audio', 'video', 'transcription', 'speech', 'embeddings', 'rerank']] = Field(default_factory=lambda: [])
     tokenizer: Optional[str] = None
     disk_size: Optional[int] = None  # for local models only
 
@@ -48,12 +48,11 @@ class ModelInfo(BaseModel):
 
     providers: list[str]             # ['openai', 'openrouter']
     capabilities: list[Literal[
-        'chat',
-        'vision',
-        'function_call',
-        'embedding',
-        'reasoning',
-        'tool'
+        'chat', 'vision',
+        'image', 'audio', 'video',
+        'stt', 'tts',
+        'embedding', 'rerank',
+        'tool', 'structured_output', 'reasoning', 'web_search',
     ]] = Field(default_factory=lambda: ['chat'])
     supported_parameters: list[str] = Field(default_factory=lambda: [])
 

@@ -68,16 +68,5 @@ def is_safe_text_file(file_path: str | Path, sample_size: int = 1024) -> bool:
         return False
 
 
-def json_load(file):
-    file = Path(file)
-    with file.open('r', encoding='utf-8') as fin:
-        return json.load(fin)
-
-
-def json_dump(obj, file, ensure_ascii=False, indent=None):
-    with open(file, 'w', encoding='utf-8') as fout:
-        json.dump(obj, fout, ensure_ascii=ensure_ascii, indent=indent)
-
-
 if __name__ == '__main__':
     assert is_safe_text_file('../text.py')

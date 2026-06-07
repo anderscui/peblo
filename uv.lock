@@ -456,9 +456,6 @@ requires-dist = [
     { name = "typer", specifier = ">=0.25.1" },
 ]
 
-[package.metadata.requires-dev]
-dev = []
-
 [[package]]
 name = "prompt-toolkit"
 version = "3.0.52"

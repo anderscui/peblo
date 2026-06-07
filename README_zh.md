@@ -60,7 +60,7 @@ peblo --help
 peblo --version
 
 peblo summary < story.txt
-peblo translate -t ja -m ollama:qwen3:4b-instruct 'hello, world'
+peblo translate -t ja -m ollama:gemma4:12b 'hello, world'
 
 peblo ocr image.png
 

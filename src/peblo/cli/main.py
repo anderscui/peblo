@@ -447,7 +447,7 @@ if __name__ == "__main__":
     # python main.py --help
     # python main.py --version
     # python main.py summary < story.txt
-    # python main.py translate -t ja -m ollama:qwen3:4b-instruct 'hello, world'
+    # python main.py translate -t ja -m ollama:gemma4:12b 'hello, world'
     # python main.py ocr image.png
     # python main.py quote verify --author 鲁迅 "其实地上本没有路，走的人多了，也便成了路"
     # python main.py quote search "世上本没有路；走的人多了，也就慢慢有了路"
